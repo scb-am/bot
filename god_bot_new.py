@@ -97,7 +97,7 @@ def any_msg(message):
                 r_avtor = requests.get(text3, headers=headers)     #ищем автора первого поста
                 soup_avtor = BeautifulSoup(r_avtor.text, 'lxml')
                 text_avtor = soup_avtor.findAll('div', "postauthor")
-                text_avtor = text_avtor[1].getText()
+                text_avtor = text_avtor[0].getText()
                 print (text_avtor)
                 nam = 100   #счетчик картинок
                 for image in images:
@@ -167,6 +167,8 @@ def callback_inline(call):
                     print (text_date)
                     text_find_1 = str(text_date[0])
                     text_find_2 = str(text_date[1])
+                    text_find_3 = '2018'                        #обьявляем исключения для поиска
+                    text_find_4 = '.18'
                     print (text_find_1)
                     print (text_find_2)
                     for number in range(20):
@@ -176,18 +178,25 @@ def callback_inline(call):
                         text_url = "https://forum.militarist.ua" + text_url          #ссылка на страницу темы
                         text_topic = text_topic[number].getText()
                         index = text_topic.find(text_find_1)
+                        num_of_m = text_topic.count(text_find_1)     #количество совпадений номера месяца
+                        num_of_y1 = text_topic.count(text_find_3)
+                        num_of_y2 = text_topic.count(text_find_4)
                         index2 = text_topic.find(text_find_2)
                         if index >= 0 and index2 >= 0:
-                            print (text_topic)
-                            keyboard = types.InlineKeyboardMarkup()
-                            url_button = types.InlineKeyboardButton(text_topic, text_url)
-                            keyboard.add(url_button)
-                            bot.send_message(message.chat.id, 'text_avtor', reply_markup=keyboard)
+                            if num_of_m > num_of_y1:
+                                if num_of_m > num_of_y2:
+                                    print (text_topic)
+                                    keyboard = types.InlineKeyboardMarkup()
+                                    url_button = types.InlineKeyboardButton(text_topic, text_url)
+                                    keyboard.add(url_button)
+                                    bot.send_message(message.chat.id, 'text_avtor', reply_markup=keyboard)
                 else:
                     text_date = (text_day, text_month, text_year)
                     print (text_date)
                     text_find_1 = str(text_date[0])
                     text_find_2 = str(text_date[1])
+                    text_find_3 = '2018'                        #обьявляем исключения для поиска
+                    text_find_4 = '.18'
                     for number in range(20):
                         text_topic = soup.findAll('a', "topictitle")
                         text_url = text_topic[number].get('href')
@@ -195,48 +204,96 @@ def callback_inline(call):
                         text_url = "https://forum.militarist.ua" + text_url          #ссылка на страницу темы
                         text_topic = text_topic[number].getText()
                         index = text_topic.find(text_find_1)
+                        num_of_m = text_topic.count(text_find_1)     #количество совпадений номера месяца
+                        num_of_y1 = text_topic.count(text_find_3)
+                        num_of_y2 = text_topic.count(text_find_4)
                         index2 = text_topic.find(text_find_2)
+                        prov_date_1 = text_find_3.count(text_find_1)
+                        prov_date_2 = text_find_4.count(text_find_1)
                         if index >= 0 and index2 >= 0:
-                            print (text_topic)
-                            pagescr = urlopen(text_url)   #Ищем авторов и картинки
-                            soup_img = BeautifulSoup(pagescr, 'lxml')
-                            images = soup_img.findAll('img')
-                            r_avtor = requests.get(text_url, headers=headers)     #ищем автора первого поста
-                            soup_avtor = BeautifulSoup(r_avtor.text, 'lxml')
-                            text_avtor = soup_avtor.findAll('div', "postauthor")
-                            text_avtor = text_avtor[1].getText()
-                            print (text_avtor)
-                            nam = 100   #счетчик картинок
-                            for image in images:
-                                textscr = image['alt']
-                                index = textscr.find(u'Изображение')   #проход 1
-                                #print index
-                                if index >= 0:
-                                    if nam <101:
-                                        print(image['src'])
-                                        textscr2 = image['src']
-                                        print (textscr2)
-                                        print (nam)
-                                        nam += 1
-                                        #print (nam)
-                                index2 = textscr.find(u'jpg')   #проход 2
-                                #print index
-                                if index2 >= 0:
-                                    if nam <101:
-                                        print(image['src'])
-                                        textscr2 = image['src']
-                                        textscr2 = textscr2[1:]
-                                        textscr2 = "https://forum.militarist.ua" + textscr2
-                                        print (textscr2)
-                                        print (nam)
-                                        nam += 1
-                                        #print (nam)
-                            text_avtor = u"Организатор - " + text_avtor   # добавляем к автору "
-                            keyboard = types.InlineKeyboardMarkup()
-                            url_button = types.InlineKeyboardButton(text_topic, text_url)
-                            keyboard.add(url_button)
-                            bot.send_message(message.chat.id, text_avtor, reply_markup=keyboard)
-                            bot.send_photo(message.chat.id, textscr2)
+                            if prov_date_1 == 0 and prov_date_2 == 0:
+                                #if num_of_m > num_of_y1 and num_of_m > num_of_y2:
+                                print (text_topic)
+                                pagescr = urlopen(text_url)   #Ищем авторов и картинки
+                                soup_img = BeautifulSoup(pagescr, 'lxml')
+                                images = soup_img.findAll('img')
+                                r_avtor = requests.get(text_url, headers=headers)     #ищем автора первого поста
+                                soup_avtor = BeautifulSoup(r_avtor.text, 'lxml')
+                                text_avtor = soup_avtor.findAll('div', "postauthor")
+                                text_avtor = text_avtor[0].getText()
+                                print (text_avtor)
+                                nam = 100   #счетчик картинок
+                                for image in images:
+                                    textscr = image['alt']
+                                    index = textscr.find(u'Изображение')   #проход 1
+                                    #print index
+                                    if index >= 0:
+                                        if nam <101:
+                                            print(image['src'])
+                                            textscr2 = image['src']
+                                            print (textscr2)
+                                            print (nam)
+                                            nam += 1
+                                            #print (nam)
+                                    index2 = textscr.find(u'jpg')   #проход 2
+                                    #print index
+                                    if index2 >= 0:
+                                        if nam <101:
+                                            print(image['src'])
+                                            textscr2 = image['src']
+                                            textscr2 = textscr2[1:]
+                                            textscr2 = "https://forum.militarist.ua" + textscr2
+                                            print (textscr2)
+                                            print (nam)
+                                            nam += 1
+                                            #print (nam)
+                                text_avtor = u"Организатор - " + text_avtor   # добавляем к автору "
+                                keyboard = types.InlineKeyboardMarkup()
+                                url_button = types.InlineKeyboardButton(text_topic, text_url)
+                                keyboard.add(url_button)
+                                bot.send_message(message.chat.id, text_avtor, reply_markup=keyboard)
+                                bot.send_photo(message.chat.id, textscr2)
+                            elif print (text_topic):
+                                if num_of_m > num_of_y1 and num_of_m > num_of_y2:
+                                    pagescr = urlopen(text_url)   #Ищем авторов и картинки
+                                    soup_img = BeautifulSoup(pagescr, 'lxml')
+                                    images = soup_img.findAll('img')
+                                    r_avtor = requests.get(text_url, headers=headers)     #ищем автора первого поста
+                                    soup_avtor = BeautifulSoup(r_avtor.text, 'lxml')
+                                    text_avtor = soup_avtor.findAll('div', "postauthor")
+                                    text_avtor = text_avtor[0].getText()
+                                    print (text_avtor)
+                                    nam = 100   #счетчик картинок
+                                    for image in images:
+                                        textscr = image['alt']
+                                        index = textscr.find(u'Изображение')   #проход 1
+                                        #print index
+                                        if index >= 0:
+                                            if nam <101:
+                                                print(image['src'])
+                                                textscr2 = image['src']
+                                                print (textscr2)
+                                                print (nam)
+                                                nam += 1
+                                                #print (nam)
+                                        index2 = textscr.find(u'jpg')   #проход 2
+                                        #print index
+                                        if index2 >= 0:
+                                            if nam <101:
+                                                print(image['src'])
+                                                textscr2 = image['src']
+                                                textscr2 = textscr2[1:]
+                                                textscr2 = "https://forum.militarist.ua" + textscr2
+                                                print (textscr2)
+                                                print (nam)
+                                                nam += 1
+                                                #print (nam)
+                                    text_avtor = u"Организатор - " + text_avtor   # добавляем к автору "
+                                    keyboard = types.InlineKeyboardMarkup()
+                                    url_button = types.InlineKeyboardButton(text_topic, text_url)
+                                    keyboard.add(url_button)
+                                    bot.send_message(message.chat.id, text_avtor, reply_markup=keyboard)
+                                    bot.send_photo(message.chat.id, textscr2)
         elif call.data == "test_by_word":
             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="по тексту")
             message = call.message

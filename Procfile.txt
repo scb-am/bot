@@ -1,1 +1,0 @@
-web: python3 target/god_bot_new.py

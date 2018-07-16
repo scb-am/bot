@@ -1,1 +1,1 @@
-web: python3 god_bot_new.py
+web: python3 god_bot_new.py -p $PORT

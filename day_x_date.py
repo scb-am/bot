@@ -14,7 +14,7 @@ def day_x_date(message_date):   #получаем переменную дату 
     text_year = int(local_time.strftime("%y"))
     text_month = int(local_time.strftime("%m"))
     text_day = int(local_time.strftime("%d"))
-    text_day = 30
+    #text_day = 30
     text_day_const = text_day
     text_date = calendar.weekday(text_year, text_month, text_day)  #определяем день недели
     razn = 6 - text_date   #определяем сколько дней осталось до конца недели

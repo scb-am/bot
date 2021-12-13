@@ -22,7 +22,7 @@ keyboard==0.13.2
 
 keyboard==0.13.2
 
-lxml==4.2.3
+lxml==4.6.5
 
 multidict==4.3.1
 
